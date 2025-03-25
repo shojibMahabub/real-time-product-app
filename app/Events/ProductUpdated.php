@@ -24,7 +24,8 @@ class ProductUpdated implements ShouldBroadcast
     public function __construct(Product $product)
     {
         $this->product = $product;
-    }
+        \Log::info('Broadcasting event for product ID: ' . $product->id);
+    }    
 
     /**
      * Get the channels the event should broadcast on.
@@ -38,6 +39,6 @@ class ProductUpdated implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'product-updated';
+        return new Channel('product-updated');
     }
 }

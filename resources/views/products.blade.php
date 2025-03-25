@@ -16,22 +16,31 @@
     </div>
 
     <script>
-        // Fetch products from backend
         function fetchProducts() {
             axios.get('/fetch-products')
-                .then(response => console.log(response.data))
+                .then(response => {
+                    console.log(response.data);
+                    loadProducts();
+                })                
                 .catch(error => console.error(error));
         }
 
-        // Load products and display them
+        function updateProduct(id) {
+            axios.get(`/update-product/${id}`)
+                .then(response => {
+                    console.log(response.data);
+                    loadProducts();
+                })
+                .catch(error => console.error(error));
+        }
+
         function loadProducts() {
             axios.get('/products')
                 .then(response => {
                     const products = response.data;
                     const list = document.getElementById('product-list');
-                    list.innerHTML = '';  // Clear the product list
+                    list.innerHTML = '';
 
-                    // Loop through each product and display its details
                     products.forEach(product => {
                         let item = document.createElement('li');
                         item.classList.add("bg-gray-200", "p-4", "rounded-lg", "shadow-md");
@@ -58,30 +67,42 @@
                                         <span class="text-yellow-500 font-semibold">⭐ ${product.rating_rate}</span>
                                         <span class="ml-2 text-gray-600 text-sm">(${product.rating_count} reviews)</span>
                                     </div>
+
+                                    <!-- Update Button -->
+                                    <button onclick="updateProduct(${product.id})" class="bg-yellow-500 text-white px-4 py-2 mt-4 rounded-lg">Update Product</button>
                                 </div>
                             </div>
                         `;
-                        list.appendChild(item);  // Add product to the list
+                        list.appendChild(item);
                     });
                 })
                 .catch(error => console.error(error));
         }
 
-        // Load initial products
         loadProducts();
 
-        // Pusher Configuration for real-time updates
         Pusher.logToConsole = true;
         var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
             cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
             forceTLS: true
         });
 
+        console.log("Pusher connection established");
+
         var channel = pusher.subscribe('product-channel');
+
         channel.bind('product-updated', function(data) {
-            console.log('New product received:', data);
-            loadProducts();  // Reload product list after receiving real-time updates
+            console.log('Received product update:', data);
+
+            if (localStorage.getItem('product-updated') !== data.product.id.toString()) {
+                loadProducts();
+                localStorage.setItem('product-updated', data.product.id.toString());
+            }
         });
+
+        console.log("Subscribed to product-channel");
+
+
     </script>
 </body>
 </html>

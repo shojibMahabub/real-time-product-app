@@ -46,6 +46,8 @@ class ProductController extends Controller
             'price' => 20.00,
         ]);
 
+        \Log::info('Broadcasting event from controller for product ID: ' . $product->id);
+
         broadcast(new ProductUpdated($product))->toOthers();
 
         return response()->json(['message' => 'Product updated successfully']);
