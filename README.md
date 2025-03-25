@@ -2,6 +2,8 @@
 
 This is a Laravel-based application that uses **Pusher** for real-time updates. When products are updated or fetched, all connected clients automatically receive updates without needing to refresh the page.
 
+### PLEASE FIND THE PROOF OF WORK ZIP FILE CONTAINS WORKING SCREENCAST
+
 ## Table of Contents
 1. [Requirements](#requirements)
 2. [Installation](#installation)
