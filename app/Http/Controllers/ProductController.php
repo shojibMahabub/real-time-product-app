@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Events\ProductUpdated;
+use App\Events\ProductEvent;
 
 class ProductController extends Controller
 {
@@ -26,7 +26,7 @@ class ProductController extends Controller
                 ]
             );
 
-            broadcast(new ProductUpdated($product))->toOthers();
+            broadcast(new ProductEvent($product))->toOthers();
         }
 
         return response()->json(['message' => 'Products fetched and stored successfully!']);
@@ -46,9 +46,7 @@ class ProductController extends Controller
             'price' => 20.00,
         ]);
 
-        \Log::info('Broadcasting event from controller for product ID: ' . $product->id);
-
-        broadcast(new ProductUpdated($product))->toOthers();
+        broadcast(new ProductEvent($product))->toOthers();
 
         return response()->json(['message' => 'Product updated successfully']);
     }

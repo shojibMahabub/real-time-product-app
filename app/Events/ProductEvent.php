@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Product;
 
 
-class ProductUpdated implements ShouldBroadcast
+class ProductEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -24,7 +24,7 @@ class ProductUpdated implements ShouldBroadcast
     public function __construct(Product $product)
     {
         $this->product = $product;
-        \Log::info('Broadcasting event for product ID: ' . $product->id);
+        // \Log::info('Broadcasting event for product ID: ' . $product->id);
     }    
 
     /**
@@ -39,6 +39,6 @@ class ProductUpdated implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return new Channel('product-updated');
+        return 'product-updated';
     }
 }

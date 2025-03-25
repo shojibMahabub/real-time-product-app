@@ -87,12 +87,12 @@
             forceTLS: true
         });
 
-        console.log("Pusher connection established");
+        // console.log("Pusher connection established");
 
         var channel = pusher.subscribe('product-channel');
 
         channel.bind('product-updated', function(data) {
-            console.log('Received product update:', data);
+            // console.log('Received product update:', data);
 
             if (localStorage.getItem('product-updated') !== data.product.id.toString()) {
                 loadProducts();
@@ -100,7 +100,7 @@
             }
         });
 
-        console.log("Subscribed to product-channel");
+        // console.log("Subscribed to product-channel");
 
 
     </script>
