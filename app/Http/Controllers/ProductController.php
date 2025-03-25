@@ -18,7 +18,11 @@ class ProductController extends Controller
                 ['name' => $item['title']],
                 [
                     'description' => $item['description'],
-                    'price' => $item['price']
+                    'price' => $item['price'],
+                    'category' => $item['category'],
+                    'image' => $item['image'],
+                    'rating_rate' => $item['rating']['rate'],
+                    'rating_count' => $item['rating']['count']
                 ]
             );
 
