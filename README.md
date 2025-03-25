@@ -1,66 +1,104 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Real-Time Product Display with Laravel and Pusher
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a Laravel-based application that uses **Pusher** for real-time updates. When products are updated or fetched, all connected clients automatically receive updates without needing to refresh the page.
 
-## About Laravel
+## Table of Contents
+1. [Requirements](#requirements)
+2. [Installation](#installation)
+3. [Configuration](#configuration)
+4. [Running the Application](#running-the-application)
+5. [Pusher Integration](#pusher-integration)
+6. [Testing Real-Time Updates](#testing-real-time-updates)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requirements
+- **PHP 8.0+**
+- **Composer**
+- **Laravel 8.x+**
+- **MySQL** (or compatible database)
+- **Pusher Account** (for real-time broadcasting)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Follow these steps to set up and run the application:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Clone the repository
+Clone the repository to your local machine:
+```bash
+git clone https://github.com/shojibMahabub/real-time-product-app.git
+cd real-time-product-app
+```
+### 2. Install dependencies
+Run Composer to install all PHP dependencies:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```composer install```
 
-## Laravel Sponsors
+### 3. Set up the environment
+Copy the .env.example file to .env
+```cp .env.example .env```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 4. Configure environment variables
+Edit the .env file to set up your database and Pusher credentials:
 
-### Premium Partners
+Database Configuration:
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_username
+DB_PASSWORD=your_database_password
+```
+Pusher Configuration: Obtain your Pusher credentials from Pusher Dashboard and set them here:
+```
+PUSHER_APP_ID=your_pusher_app_id
+PUSHER_APP_KEY=your_pusher_app_key
+PUSHER_APP_SECRET=your_pusher_app_secret
+PUSHER_APP_CLUSTER=your_pusher_app_cluster
+```
+### 5. Generate application key
+Run the following command to generate the application key:
+```php artisan key:generate```
+### 6. Run migrations
+Run the database migrations to set up the schema:
+```php artisan migrate```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Configuration
+#### Broadcasting
 
-## Contributing
+This application uses Laravel's broadcasting feature to send real-time updates to the client. Ensure your .env file is properly configured for Pusher as described above.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Queue Worker
+The application uses queues to handle background tasks like broadcasting events. To process queued jobs (e.g., product update broadcasts), run the queue worker:
+```php artisan queue:work```
 
-## Code of Conduct
+>
+> You can also automate the queue worker with Supervisor or Systemd for
+> production environments.
+>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Running the Application
+After setting everything up, you can start the application by running the built-in Laravel development server:
 
-## Security Vulnerabilities
+```php artisan serve```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+# Pusher Integration
+Pusher is used to broadcast events when products are updated. Here's how it's integrated:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Broadcasting Events: When a product is updated, a ProductUpdated event is fired. This event is broadcasted on the product-channel to notify all connected clients that a product has been updated.
+
+The broadcastOn method in the ProductEvent to ensures that the event is sent to the correct channel.
+
+Listening for Events: Clients subscribe to the product-channel using Pusher. When the product-updated event is triggered, all subscribed clients will receive the update and reload the product list automatically.
+
+The frontend code listens for this event using Pusher's JavaScript library and updates the UI accordingly.
+
+# Testing Real-Time Updates
+Start the application by running php artisan serve.
+Open multiple tabs in your browser or different browsers.
+Update a product by triggering the update from any tab.
+Check the other tabs — the product list should update automatically without needing to refresh.
